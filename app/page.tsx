@@ -1,9 +1,12 @@
 import { ArrowLeft , Heart , MessageCircle } from "lucide-react";
+import Image from "next/image";
+import laala  from "@/data/laala.json"
+import collection from "@/data/collection.json"
 const page = () => {
   return (
    <main className="mobile-screen dark-blur-background pb-20 "
       style={{
-        backgroundImage: `url('https://firebasestorage.googleapis.com/v0/b/la-a-la.appspot.com/o/coverLaaLaImage%2F2025-04-21%2018%3A39%3A10.581522JPEG_20250421_183910_8327017847134772518.jpg?alt=media&token=c9fe07c6-b961-4532-b5d7-5f9670b5fc33')`,
+        backgroundImage: `url(${collection.cover})`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
       }}>
@@ -16,31 +19,33 @@ const page = () => {
         <ArrowLeft size={24} />
       </button>
       <div className="flex items-center">
-        <h1 className="text-white text-lg font-medium">Laala à participation privé</h1>
-        <span className="ml-2" style={{ color: "#fe5733" }}>En cours</span>
+        <h1 className="text-white text-lg font-medium">{collection.categorie}</h1>
+        <span className="ml-2" style={{ color: "#fe5733" }}>{collection.encours ? "En Cours" : "Terminer"}</span>
       </div>
-      <div className="w-6"></div> {/* Spacer for alignment */}
+      <div className="w-6"></div> 
     </div>
     <div className="relative mx-4 max-w-1/3 my-6 rounded-lg overflow-hidden shadow-lg">
       <div className="orange-gradient p-3 text-white opacity-70">
         <div className="flex mb-2">
-          <img 
-            src="https://firebasestorage.googleapis.com/v0/b/la-a-la.appspot.com/o/coverLaaLaImage%2F2025-04-21%2018%3A39%3A10.581522JPEG_20250421_183910_8327017847134772518.jpg?alt=media&token=c9fe07c6-b961-4532-b5d7-5f9670b5fc33" 
-            alt="Post thumbnail" 
+          <Image 
+            src={laala.fichierAlbum[0]}
+            alt="Post thumbnail"
+            width={400}
+            height={128}
             className="w-full h-32 rounded-md object-cover"
           />
         </div>
         
         <div className="flex justify-between items-center text-xs mb-1">
-          <span>2025-04-21 18:45</span>
+          <span>{laala.date}{laala.heure}</span>
           <div className="flex items-center space-x-3">
             <div className="flex items-center">
               <Heart size={16} className="mr-1" />
-              <span>2</span>
+              <span>{laala.likes}</span>
             </div>
             <div className="flex items-center">
               <MessageCircle size={16} className="mr-1" />
-              <span>0</span>
+              <span>{laala.commentaires}</span>
             </div>
           </div>
         </div>
@@ -48,19 +53,19 @@ const page = () => {
         <div className="mt-1">
           <div className="flex">
             <span className="text-white">Auteur :</span>
-            <span className="ml-3">Moi</span>
+            <span className="ml-3">{laala.nomCrea}</span>
           </div>
-          <p className="text-white text-sm mt-1">Moi lors de ma toute pr...</p>
+          <p className="text-white text-sm mt-1 truncate">{laala.nom_l}.</p>
         </div>
       </div>
     </div>
 
     {/* ------------Stats------------- */}
-    <div className="-50 text-center px-4 mt-65">
+    <div className="fixed bottom-[60px] w-full max-w-full px-4 py-3 text-center">
       <h2 className="text-white text-xl font-medium">Just~me 🌹</h2>
       <a href="#" className="text-laala-orange text-sm mt-1 inline-block">Lire plus</a>
       
-      <div className="flex justify-between mt-6 px-2 text-sm">
+      <div className="flex justify-between mt-4 text-sm">
         <div>
           <span style={{ color: "#fe5733" }}>3 suiveurs</span>
         </div>
@@ -72,7 +77,7 @@ const page = () => {
         </div>
       </div>
       
-      <div className="flex justify-between px-2 text-sm mt-2">
+      <div className="flex justify-between text-sm mt-2">
         <div>
           <span className="text-white">0.0 commentaires</span>
         </div>
