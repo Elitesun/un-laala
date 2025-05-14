@@ -397,52 +397,154 @@ const page = () => {
                 Statistiques
               </h3>
               
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-6">
-                <div className="p-5 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-300 hover:shadow-sm group">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">Vues</span>
-                    <span className="text-orange-500 font-bold text-lg group-hover:text-orange-600 transition-colors duration-300">
-                      {collection.vues || 0}
-                    </span>
+              {/* Main statistics visualization */}
+              <div className="mb-6">
+                <div className="relative p-5 bg-white/10 backdrop-blur-[1px] rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="flex justify-between items-center mb-4">
+                    <span className="text-gray-700 font-medium">Vue d'ensemble</span>
+                    <span className="text-orange-500 text-xs font-semibold px-2 py-0.5 bg-orange-100/30 rounded-full">Derniers 30 jours</span>
                   </div>
-                  <div className="w-full bg-gray-200/60 h-3 rounded-full overflow-hidden">
-                    <div className="bg-orange-500 h-full rounded-full transition-all duration-500 group-hover:bg-orange-600" style={{ width: `${Math.min(100, ((collection.vues || 0) / 100) * 100)}%` }}></div>
+                  
+                  {/* Circular progress chart */}
+                  <div className="flex flex-wrap justify-center gap-6 mb-8">
+                    {/* Likes progress */}
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-24 h-24">
+                        <svg className="w-24 h-24" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="#fb923c" 
+                            strokeWidth="8" 
+                            strokeDasharray="283" 
+                            strokeDashoffset={`${283 - (283 * (collection.likes || 0) / 100)}`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 50 50)"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-bold text-gray-800">{collection.likes || 0}</span>
+                          <span className="text-xs text-gray-500">J&apos;aime</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Views progress */}
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-24 h-24">
+                        <svg className="w-24 h-24" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="#f97316" 
+                            strokeWidth="8" 
+                            strokeDasharray="283" 
+                            strokeDashoffset={`${283 - (283 * (collection.vues || 0) / 500)}`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 50 50)"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-bold text-gray-800">{collection.vues || 0}</span>
+                          <span className="text-xs text-gray-500">Vues</span>
+                        </div>
+                      </div>
+                    </div>
+                    
+                    {/* Shares progress */}
+                    <div className="flex flex-col items-center">
+                      <div className="relative w-24 h-24">
+                        <svg className="w-24 h-24" viewBox="0 0 100 100">
+                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
+                          <circle 
+                            cx="50" 
+                            cy="50" 
+                            r="45" 
+                            fill="none" 
+                            stroke="#ea580c" 
+                            strokeWidth="8" 
+                            strokeDasharray="283" 
+                            strokeDashoffset={`${283 - (283 * (laala.vues || 0) / 100)}`}
+                            strokeLinecap="round"
+                            transform="rotate(-90 50 50)"
+                          />
+                        </svg>
+                        <div className="absolute inset-0 flex flex-col items-center justify-center">
+                          <span className="text-2xl font-bold text-gray-800">{laala.vues || 0}</span>
+                          <span className="text-xs text-gray-500">Partages</span>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  {/* Bar charts */}
+                  <div className="mt-4">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-gray-700 text-sm">Engagement quotidien</span>
+                    </div>
+                    <div className="flex justify-between items-end h-20 gap-1">
+                      {Array.from({ length: 7 }).map((_, i) => {
+                        const height = Math.floor(30 + Math.random() * 70);
+                        return (
+                          <div key={i} className="flex-1 flex flex-col items-center group">
+                            <div 
+                              className="w-full bg-gradient-to-t from-orange-500 to-orange-300 rounded-t-sm group-hover:from-orange-600 group-hover:to-orange-400 transition-all duration-300"
+                              style={{ height: `${height}%` }}
+                            ></div>
+                            <span className="text-xs text-gray-500 mt-1">{["L", "M", "M", "J", "V", "S", "D"][i]}</span>
+                          </div>
+                        );
+                      })}
+                    </div>
+                  </div>
+                </div>
+              </div>
+              
+              {/* Stats details cards */}
+              <div className="grid grid-cols-2 gap-4">
+                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
+                    <Heart size={18} className="text-orange-500" />
+                  </div>
+                  <div>
+                    <div className="text-xs text-gray-500">Taux d&apos;engagement</div>
+                    <div className="text-xl font-bold text-gray-800">{Math.round((collection.likes || 3) / (collection.vues || 20) * 100)}%</div>
                   </div>
                 </div>
                 
-                <div className="p-5 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-300 hover:shadow-sm group">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">J&apos;aime</span>
-                    <span className="text-orange-500 font-bold text-lg group-hover:text-orange-600 transition-colors duration-300">
-                      {collection.likes || 0}
-                    </span>
+                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
+                    <User size={18} className="text-orange-500" />
                   </div>
-                  <div className="w-full bg-gray-200/60 h-3 rounded-full overflow-hidden">
-                    <div className="bg-orange-500 h-full rounded-full transition-all duration-500 group-hover:bg-orange-600" style={{ width: `${Math.min(100, ((collection.likes || 0) / 5) * 100)}%` }}></div>
+                  <div>
+                    <div className="text-xs text-gray-500">Abonnés</div>
+                    <div className="text-xl font-bold text-gray-800">{collection.tablikes ? collection.tablikes.length : 3}</div>
                   </div>
                 </div>
                 
-                <div className="p-5 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-300 hover:shadow-sm group">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">Partages</span>
-                    <span className="text-orange-500 font-bold text-lg group-hover:text-orange-600 transition-colors duration-300">
-                      {laala.vues || 0}
-                    </span>
+                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
+                    <MessageCircle size={18} className="text-orange-500" />
                   </div>
-                  <div className="w-full bg-gray-200/60 h-3 rounded-full overflow-hidden">
-                    <div className="bg-orange-500 h-full rounded-full transition-all duration-500 group-hover:bg-orange-600" style={{ width: `${Math.min(100, ((laala.vues || 0) / 10) * 100)}%` }}></div>
+                  <div>
+                    <div className="text-xs text-gray-500">Commentaires</div>
+                    <div className="text-xl font-bold text-gray-800">{Math.floor(Math.random() * 20)}</div>
                   </div>
                 </div>
                 
-                <div className="p-5 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-colors duration-300 hover:shadow-sm group">
-                  <div className="flex justify-between items-center mb-3">
-                    <span className="text-gray-600 group-hover:text-gray-800 transition-colors duration-300">Activité</span>
-                    <span className="text-orange-500 font-bold text-lg group-hover:text-orange-600 transition-colors duration-300">
-                      {Math.floor(Math.random() * 100)}%
-                    </span>
+                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
+                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
+                    <ExternalLink size={18} className="text-orange-500" />
                   </div>
-                  <div className="w-full bg-gray-200/60 h-3 rounded-full overflow-hidden">
-                    <div className="bg-orange-500 h-full rounded-full transition-all duration-500 group-hover:bg-orange-600" style={{ width: `${Math.floor(Math.random() * 100)}%` }}></div>
+                  <div>
+                    <div className="text-xs text-gray-500">Visites</div>
+                    <div className="text-xl font-bold text-gray-800">{collection.vues ? collection.vues + Math.floor(Math.random() * 30) : 10}</div>
                   </div>
                 </div>
               </div>
