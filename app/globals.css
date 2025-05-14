@@ -1,7 +1,9 @@
 @import "tailwindcss";
 
 :root {
-    --laala-orange: #fe5733;
+    --laala-primary: #fe5733;
+    --laala-secondary: #ff8a65;
+    --laala-accent: #fe5733;
 }
 
 body {
@@ -27,17 +29,40 @@ body::before {
     z-index: -1;
 }
 
-.text-laala-orange {
-    color: var(--laala-orange);
+.text-laala-primary {
+    color: var(--laala-primary);
+}
+
+.text-laala-secondary {
+    color: var(--laala-secondary);
+}
+
+.text-laala-accent {
+    color: var(--laala-accent);
 }
 
 .bg-laala-darkButton {
     background-color: rgba(0, 0, 0, 0.5);
 }
 
-.orange-gradient {
-    background-color: #fe5733;
-    background-image: linear-gradient(135deg, #fe5733 10%, #ff7e33 100%);
+.bg-laala-primary {
+    background-color: var(--laala-primary);
+}
+
+.bg-laala-secondary {
+    background-color: var(--laala-secondary);
+}
+
+.bg-laala-accent {
+    background-color: var(--laala-accent);
+}
+
+.laala-gradient {
+    background-image: linear-gradient(135deg, var(--laala-primary) 0%, var(--laala-secondary) 100%);
+}
+
+.accent-gradient {
+    background-image: linear-gradient(135deg, var(--laala-accent) 10%, #ff8a65 100%);
 }
 
 .dark-blur-background {
@@ -53,4 +78,113 @@ body::before {
     max-height: 100vh;
     overflow-y: auto;
     position: relative;
+    scroll-behavior: smooth;
+}
+
+.text-shadow {
+    text-shadow: 0px 1px 2px rgba(0, 0, 0, 0.5);
+}
+
+/* Effets de survol simplifiés */
+.hover-scale {
+    transition: transform 0.2s ease;
+}
+.hover-scale:hover {
+    transform: scale(1.03);
+}
+
+.hover-opacity:hover {
+    opacity: 0.85;
+}
+
+.card-hover {
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+.card-hover:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 5px 15px rgba(254, 87, 51, 0.2);
+}
+
+/* Custom Scrollbar Styles */
+/* For Webkit browsers (Chrome, Safari) */
+.mobile-screen::-webkit-scrollbar {
+    width: 6px;
+}
+
+.mobile-screen::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    margin: 10px 0;
+}
+
+.mobile-screen::-webkit-scrollbar-thumb {
+    background: linear-gradient(135deg, var(--laala-primary) 0%, var(--laala-secondary) 100%);
+    border-radius: 10px;
+    transition: all 0.3s ease;
+}
+
+.mobile-screen::-webkit-scrollbar-thumb:hover {
+    background: linear-gradient(135deg, var(--laala-secondary) 0%, var(--laala-primary) 100%);
+}
+
+/* For Firefox */
+.mobile-screen {
+    scrollbar-width: thin;
+    scrollbar-color: var(--laala-primary) rgba(0, 0, 0, 0.1);
+}
+
+/* Smooth Scroll Animation */
+.content-scroll {
+    transition: transform 0.5s cubic-bezier(0.23, 1, 0.32, 1);
+}
+
+/* Hide scrollbar on content areas but keep functionality */
+.hidden-scrollbar {
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+}
+
+.hidden-scrollbar::-webkit-scrollbar {
+    display: none;  /* Chrome, Safari, Opera */
+}
+
+/* Animation Keyframes */
+@keyframes fade-in {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes fade-in-up {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Animation Classes */
+.animate-fade-in {
+    animation: fade-in 0.6s ease forwards;
+}
+
+.animate-fade-in-up {
+    animation: fade-in-up 0.5s ease-out forwards;
+}
+
+/* Smooth scrolling transition for page elements */
+.scroll-reveal {
+    opacity: 0;
+    transition: all 0.8s cubic-bezier(0.5, 0, 0, 1);
+}
+
+.scroll-reveal.visible {
+    opacity: 1;
+    transform: translateY(0);
 }
