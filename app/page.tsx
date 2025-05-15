@@ -1,11 +1,16 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { ArrowLeft, Heart, MessageCircle, Play, Pause, Volume2, VolumeX, ExternalLink, Share2, User, Calendar, ChevronUp, Grid, Info, X, Bookmark, Clock } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Play, Pause, Volume2, VolumeX, ExternalLink, Share2, User, Clock, ChevronUp, Grid, Info, X, Bookmark } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import collection from "@/data/collection.json";
 import laala from "@/data/laala.json";
 
+/**
+ * Page principale de l'application de collection de médias
+ * Affiche le profil d'un utilisateur, sa collection de médias (images/vidéos),
+ * et permet d'interagir avec ces médias via un visualiseur adapté
+ */
 const page = () => {
   // Media viewer state
   const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
@@ -49,27 +54,27 @@ const page = () => {
     }
   };
 
-  // Open media in modal
+  // Open media in modal - Used when clicking on a media item
   const openMedia = (media: string) => {
     setSelectedMedia(media);
   };
 
-  // Close media modal
+  // Close media modal - Used when exiting the media viewer
   const closeMedia = () => {
     setSelectedMedia(null);
   };
 
-  // Scroll to top function
+  // Handle scroll events - Shows/hides scroll-to-top button based on scroll position
+  const handleScroll = () => {
+    setShowScrollTop(window.scrollY > 300);
+  };
+
+  // Scroll to top function - Smooth scroll to top of page
   const scrollToTop = () => {
     window.scrollTo({
       top: 0,
       behavior: 'smooth'
     });
-  };
-
-  // Handle scroll events
-  const handleScroll = () => {
-    setShowScrollTop(window.scrollY > 300);
   };
 
   // Initialize video if present
@@ -95,7 +100,7 @@ const page = () => {
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-gray-100">
-      {/* Background Video with Overlay */}
+      {/* Background Video with Overlay - Élément visuel en arrière-plan */}
       {hasVideoBackground && (
         <div className="fixed inset-0 -z-10 opacity-10">
           <video
@@ -110,7 +115,7 @@ const page = () => {
         </div>
       )}
 
-      {/* Header - Responsive Navbar */}
+      {/* Header - Responsive Navbar - Navigation principale et statut*/}
       <header className="sticky top-0 z-40 bg-white shadow-md">
         <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
@@ -127,17 +132,27 @@ const page = () => {
       </header>
 
       <main className="container mx-auto px-4 py-6">
-        {/* All-in-One Profile Card - Eliminates need for footer */}
-        <div className="bg-transparent rounded-xl transition-all duration-300 mb-8">
+        {/* Cover Image - Image de bannière du profil */}
+        <div className="relative w-full h-48 md:h-64 lg:h-80 mb-8 rounded-xl overflow-hidden shadow-lg">
+          <img 
+            src={collection.cover}
+            alt="Cover" 
+            className="w-full h-full object-cover"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent"></div>
+        </div>
+        
+        {/* All-in-One Profile Card */}
+        <div className="bg-transparent rounded-xl transition-all duration-300 mb-6">
           
           {/* Main content section with improved layout */}
-          <div className="px-4 md:px-6 py-6">
+          <div className="px-3 md:px-4 py-4">
             <div className="md:flex md:gap-8">
-              {/* Left column with avatar and actions */}
+              {/* Left column with avatar and stats - repositioned */}
               <div className="md:w-1/3 flex flex-col items-center">
-                {/* Avatar section */}
+                {/* Avatar section - positioned partly over the cover image */}
                 <div className="relative mb-4">
-                  <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white bg-orange-50 overflow-hidden shadow-md group">
+                  <div className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-white bg-orange-50 overflow-hidden shadow-md group -mt-16">
                     <img 
                       src={collection.avatarCrea} 
                       alt={`Photo de profil de ${collection.nomCrea}`} 
@@ -146,16 +161,15 @@ const page = () => {
                   </div>
                 </div>
                 
-                {/* Action Buttons - Stacked */}
-                <div className="flex flex-col w-full gap-2">
-                  <button className="w-full py-2.5 bg-gradient-to-r from-orange-400 to-orange-600 text-white rounded-full hover:shadow-md transition-all duration-300 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-orange-300">
-                    <User size={16} />
-                    <span>Suivre</span>
-                  </button>
-                  <button className="w-full py-2.5 bg-white/10 backdrop-blur-[1px] border border-white/20 text-gray-700 rounded-full hover:bg-white/20 transition-all duration-300 flex items-center justify-center gap-2 focus:outline-none focus:ring-2 focus:ring-gray-300">
-                    <Share2 size={16} />
-                    <span>Partager</span>
-                  </button>
+                {/* Creator info - moved here from right column */}
+                <div className="text-center mb-4">
+                  <h1 className="text-xl md:text-2xl font-bold text-gray-800">
+                    {collection.nomCrea}
+                  </h1>
+                  <div className="text-gray-400 text-xs mt-1 flex items-center justify-center">
+                    <Clock size={12} className="mr-1" /> 
+                    <span>Membre depuis {formatDate(collection.date)}</span>
+                  </div>
                 </div>
                 
                 {/* Quick stats badges */}
@@ -175,18 +189,15 @@ const page = () => {
                 </div>
               </div>
               
-              {/* Right column with profile details and description */}
+              {/* Right column with collection details and description */}
               <div className="md:w-2/3 mt-6 md:mt-0">
                 <div className="text-center md:text-left">
                   <h1 className="text-2xl md:text-3xl font-bold text-gray-800 flex items-center gap-1.5 justify-center md:justify-start">
                     {collection.nom}
                   </h1>
-                  <div className="flex items-center gap-1 justify-center md:justify-start text-gray-600 mt-1">
-                    <User size={14} className="text-orange-500" />
-                    <span className="font-medium">{collection.nomCrea}</span>
-                    <span className="text-gray-400 text-xs ml-2 flex items-center">
-                      <Clock size={12} className="mr-1" /> 
-                      <span>Membre depuis {formatDate(collection.date)}</span>
+                  <div className="text-gray-600 text-sm mt-1">
+                    <span className="px-3 py-0.5 rounded-full bg-orange-100/30 text-orange-600 font-medium inline-block">
+                      {collection.categorie}
                     </span>
                   </div>
                 </div>
@@ -204,48 +215,17 @@ const page = () => {
                   </div>
                   <div className="absolute -bottom-5 -right-3 text-orange-400/30 text-6xl font-serif transform rotate-180">&ldquo;</div>
                 </div>
-                
-                {/* Additional profile info */}
-                <div className="mt-8 grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div className="bg-gradient-to-tr from-white/5 to-white/15 backdrop-blur-[2px] p-4 rounded-xl border border-white/30 hover:border-orange-200/30 transition-all duration-300 group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-500 group-hover:from-orange-400/30 group-hover:to-orange-500/30 transition-all duration-300">
-                        <Calendar size={18} />
-                      </div>
-                      <div>
-                        <div className="text-gray-700 font-medium">Date d&apos;inscription</div>
-                        <div className="text-sm text-gray-600 mt-0.5">
-                          {formatDate(collection.date)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div className="bg-gradient-to-tr from-white/5 to-white/15 backdrop-blur-[2px] p-4 rounded-xl border border-white/30 hover:border-orange-200/30 transition-all duration-300 group">
-                    <div className="flex items-center gap-3">
-                      <div className="w-10 h-10 flex items-center justify-center rounded-full bg-gradient-to-r from-orange-400/20 to-orange-500/20 text-orange-500 group-hover:from-orange-400/30 group-hover:to-orange-500/30 transition-all duration-300">
-                        <User size={18} />
-                      </div>
-                      <div>
-                        <div className="text-gray-700 font-medium">Créé par</div>
-                        <div className="text-sm text-gray-600 mt-0.5">
-                          {collection.nomCrea}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                </div>
               </div>
             </div>
           </div>
         </div>
 
         {/* Tab Navigation - Responsive */}
-        <div className="mb-8 bg-gradient-to-b from-white/20 to-white/30 backdrop-blur-[2px] rounded-lg border border-white/30 p-1 shadow-sm">
+        <div className="mb-6 bg-gradient-to-b from-white/20 to-white/30 backdrop-blur-[2px] rounded-lg border border-white/30 p-1 shadow-sm">
           <div className="flex gap-4 border-b border-gray-200/30">
             <button
               onClick={() => setActiveTab('media')}
-              className={`px-6 py-3 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'media' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
+              className={`px-4 py-2 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'media' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
             >
               <Grid size={16} className={activeTab === 'media' ? 'text-orange-500' : 'text-gray-400'} />
               Media
@@ -253,7 +233,7 @@ const page = () => {
             </button>
             <button
               onClick={() => setActiveTab('info')}
-              className={`px-6 py-3 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'info' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
+              className={`px-4 py-2 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'info' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
             >
               <Info size={16} className={activeTab === 'info' ? 'text-orange-500' : 'text-gray-400'} />
               Info
@@ -263,26 +243,44 @@ const page = () => {
         </div>
 
         {/* Media Grid - Responsive with Masonry-like Layout */}
+        {/* Cette section affiche tous les médias sous forme de grille responsive */}
+        {/* Chaque élément est un poste individuel de la "playlist" */}
         {activeTab === 'media' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {laala.fichierAlbum && laala.fichierAlbum.map((media, index) => {
+              // Récupérer les métadonnées associées à ce media (si disponibles)
               const metadata = laala.albumMetadata && laala.albumMetadata[index];
+              
+              // Détermine si le média est une vidéo en analysant son extension
+              // Utilisé pour afficher différents éléments UI selon le type
+              const isVideoMedia = isVideo(media);
+              
+              // Stratégie pour les miniatures:
+              // - Pour les vidéos: utiliser l'image de couverture du laala comme miniature
+              // - Pour les images: utiliser l'image elle-même
+              const thumbnail = isVideoMedia ? 
+                collection.cover : // Fallback pour les vidéos = image de couverture principale
+                media; // Pour les images = l'image elle-même
+              
               return (
                 <div
                   key={index}
-                  onClick={() => openMedia(media)}
+                  onClick={() => openMedia(media)} // Ouvre le visualiseur de média au clic
                   className="group relative bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl overflow-hidden border border-white/30 shadow-sm hover:shadow-md transition-all duration-500 cursor-pointer opacity-0 animate-fade-in-up transform hover:-translate-y-2"
                   style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
                 >
                   <div className="relative aspect-[3/4]">
-                    {isVideo(media) ? (
+                    {/* Rendu conditionnel selon le type de média (vidéo ou image) */}
+                    {isVideoMedia ? (
                       <div className="h-full">
-                        <video
-                          src={media.startsWith("/") ? media : media}
+                        {/* Pour les vidéos, on montre une miniature fixe et un bouton play */}
+                        {/* Cela évite le chargement de toutes les vidéos en même temps */}
+                        <img 
+                          src={thumbnail} 
+                          alt={metadata?.title || `Miniature vidéo ${index + 1}`}
                           className="w-full h-full object-cover"
-                          playsInline
-                          muted
                         />
+                        {/* Overlay avec bouton de lecture pour indiquer que c'est une vidéo */}
                         <div className="absolute inset-0 flex items-center justify-center bg-black/10 group-hover:bg-orange-500/20 transition-colors duration-500">
                           <div className="w-16 h-16 flex items-center justify-center rounded-full bg-orange-500/80 backdrop-blur-sm transform group-hover:scale-110 transition-transform duration-500 shadow-lg">
                             <Play className="w-7 h-7 text-white" />
@@ -290,6 +288,7 @@ const page = () => {
                         </div>
                       </div>
                     ) : (
+                      // Pour les images, on les affiche directement
                       <img
                         src={media}
                         alt={metadata?.title || `Media ${index + 1}`}
@@ -297,7 +296,7 @@ const page = () => {
                       />
                     )}
 
-                    {/* Info Overlay */}
+                    {/* Info Overlay - Statistiques qui apparaissent au survol */}
                     <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-4 opacity-0 group-hover:opacity-100 transition-opacity duration-500">
                       <div className="flex justify-between items-center">
                         <div className="flex items-center gap-1.5">
@@ -311,12 +310,18 @@ const page = () => {
                       </div>
                     </div>
 
-                    {/* Bookmark Button Overlay */}
+                    {/* Indicateur de type de média - Permet à l'utilisateur de savoir immédiatement s'il s'agit d'une vidéo ou d'une image */}
+                    <div className="absolute top-3 left-3 px-2 py-1 rounded-full bg-white/80 text-xs font-medium">
+                      {isVideoMedia ? 'Vidéo' : 'Image'}
+                    </div>
+
+                    {/* Bouton de signet qui apparaît au survol */}
                     <button className="absolute top-3 right-3 p-2 rounded-full bg-white/80 opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-orange-400 hover:text-white">
                       <Bookmark size={16} className="group-hover:scale-110 transition-transform" />
                     </button>
                   </div>
 
+                  {/* Informations sur le média (titre, date, créateur) */}
                   <div className="p-4 backdrop-blur-sm bg-white/5">
                     <div className="mb-2 line-clamp-1">
                       <h3 className="text-gray-800 text-sm font-medium group-hover:text-orange-500 transition-colors duration-300">
@@ -339,8 +344,8 @@ const page = () => {
 
         {/* Info Tab Content - Responsive Design */}
         {activeTab === 'info' && (
-          <div className="md:grid md:grid-cols-2 md:gap-8">
-            <div className="bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl border border-white/30 p-6 shadow-sm hover:shadow transition-all duration-300 opacity-0 animate-fade-in mb-6 md:mb-0" style={{ animationFillMode: 'forwards' }}>
+          <div className="md:grid md:grid-cols-2 md:gap-6">
+            <div className="bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl border border-white/30 p-4 shadow-sm hover:shadow transition-all duration-300 opacity-0 animate-fade-in mb-4 md:mb-0" style={{ animationFillMode: 'forwards' }}>
               <h3 className="text-orange-500 font-medium mb-4 flex items-center gap-2 text-lg">
                 <Info size={20} />
                 Détails supplémentaires
@@ -354,6 +359,7 @@ const page = () => {
                 <div>
                   <div className="text-gray-500 text-xs uppercase tracking-wider">Durée</div>
                   <div className="text-gray-800 font-medium mt-1">
+                    {/* Calcul dynamique de la durée entre la date de création et aujourd'hui */}
                     {(() => {
                       const date1 = new Date(collection.date);
                       const date2 = new Date();
@@ -391,160 +397,49 @@ const page = () => {
               </div>
             </div>
             
-            <div className="bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl border border-white/30 p-6 shadow-sm hover:shadow transition-all duration-300 opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
+            <div className="bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl border border-white/30 p-4 shadow-sm hover:shadow transition-all duration-300 opacity-0 animate-fade-in" style={{ animationDelay: '200ms', animationFillMode: 'forwards' }}>
               <h3 className="text-orange-500 font-medium mb-6 flex items-center gap-2 text-lg">
                 <Share2 size={20} />
                 Statistiques
               </h3>
               
-              {/* Main statistics visualization */}
-              <div className="mb-6">
-                <div className="relative p-5 bg-white/10 backdrop-blur-[1px] rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
-                  <div className="flex justify-between items-center mb-4">
-                    <span className="text-gray-700 font-medium">Vue d'ensemble</span>
+              {/* Main statistics - simplified display without progress bars */}
+              <div className="mb-4">
+                {/* Boîte de statistiques réduite pour plus de compacité */}
+                <div className="relative p-3 bg-white/10 backdrop-blur-[1px] rounded-xl border border-white/20 hover:bg-white/20 transition-all duration-300">
+                  <div className="flex justify-between items-center mb-2">
+                    <span className="text-gray-700 font-medium text-sm">Vue d&apos;ensemble</span>
                     <span className="text-orange-500 text-xs font-semibold px-2 py-0.5 bg-orange-100/30 rounded-full">Derniers 30 jours</span>
                   </div>
                   
-                  {/* Circular progress chart */}
-                  <div className="flex flex-wrap justify-center gap-6 mb-8">
-                    {/* Likes progress */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-24 h-24">
-                        <svg className="w-24 h-24" viewBox="0 0 100 100">
-                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="#fb923c" 
-                            strokeWidth="8" 
-                            strokeDasharray="283" 
-                            strokeDashoffset={`${283 - (283 * (collection.likes || 0) / 100)}`}
-                            strokeLinecap="round"
-                            transform="rotate(-90 50 50)"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-2xl font-bold text-gray-800">{collection.likes || 0}</span>
-                          <span className="text-xs text-gray-500">J&apos;aime</span>
-                        </div>
+                  {/* Simple stats display */}
+                  <div className="grid grid-cols-3 gap-2">
+                    {/* Likes */}
+                    <div className="bg-white/20 backdrop-blur-[1px] p-2 rounded-lg text-center">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-1">
+                        <Heart size={14} className="text-orange-500" />
                       </div>
+                      <div className="text-lg font-bold text-gray-800">{collection.likes || 0}</div>
+                      <div className="text-xs text-gray-500">J&apos;aime</div>
                     </div>
                     
-                    {/* Views progress */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-24 h-24">
-                        <svg className="w-24 h-24" viewBox="0 0 100 100">
-                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="#f97316" 
-                            strokeWidth="8" 
-                            strokeDasharray="283" 
-                            strokeDashoffset={`${283 - (283 * (collection.vues || 0) / 500)}`}
-                            strokeLinecap="round"
-                            transform="rotate(-90 50 50)"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-2xl font-bold text-gray-800">{collection.vues || 0}</span>
-                          <span className="text-xs text-gray-500">Vues</span>
-                        </div>
+                    {/* Views */}
+                    <div className="bg-white/20 backdrop-blur-[1px] p-2 rounded-lg text-center">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-1">
+                        <User size={14} className="text-orange-500" />
                       </div>
+                      <div className="text-lg font-bold text-gray-800">{collection.vues || 0}</div>
+                      <div className="text-xs text-gray-500">Vues</div>
                     </div>
                     
-                    {/* Shares progress */}
-                    <div className="flex flex-col items-center">
-                      <div className="relative w-24 h-24">
-                        <svg className="w-24 h-24" viewBox="0 0 100 100">
-                          <circle cx="50" cy="50" r="45" fill="none" stroke="#f1f1f1" strokeWidth="8" />
-                          <circle 
-                            cx="50" 
-                            cy="50" 
-                            r="45" 
-                            fill="none" 
-                            stroke="#ea580c" 
-                            strokeWidth="8" 
-                            strokeDasharray="283" 
-                            strokeDashoffset={`${283 - (283 * (laala.vues || 0) / 100)}`}
-                            strokeLinecap="round"
-                            transform="rotate(-90 50 50)"
-                          />
-                        </svg>
-                        <div className="absolute inset-0 flex flex-col items-center justify-center">
-                          <span className="text-2xl font-bold text-gray-800">{laala.vues || 0}</span>
-                          <span className="text-xs text-gray-500">Partages</span>
-                        </div>
+                    {/* Messages */}
+                    <div className="bg-white/20 backdrop-blur-[1px] p-2 rounded-lg text-center">
+                      <div className="w-8 h-8 rounded-full bg-orange-100 flex items-center justify-center mx-auto mb-1">
+                        <MessageCircle size={14} className="text-orange-500" />
                       </div>
+                      <div className="text-lg font-bold text-gray-800">{laala.vues || 0}</div>
+                      <div className="text-xs text-gray-500">Messages</div>
                     </div>
-                  </div>
-                  
-                  {/* Bar charts */}
-                  <div className="mt-4">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-gray-700 text-sm">Engagement quotidien</span>
-                    </div>
-                    <div className="flex justify-between items-end h-20 gap-1">
-                      {Array.from({ length: 7 }).map((_, i) => {
-                        const height = Math.floor(30 + Math.random() * 70);
-                        return (
-                          <div key={i} className="flex-1 flex flex-col items-center group">
-                            <div 
-                              className="w-full bg-gradient-to-t from-orange-500 to-orange-300 rounded-t-sm group-hover:from-orange-600 group-hover:to-orange-400 transition-all duration-300"
-                              style={{ height: `${height}%` }}
-                            ></div>
-                            <span className="text-xs text-gray-500 mt-1">{["L", "M", "M", "J", "V", "S", "D"][i]}</span>
-                          </div>
-                        );
-                      })}
-                    </div>
-                  </div>
-                </div>
-              </div>
-              
-              {/* Stats details cards */}
-              <div className="grid grid-cols-2 gap-4">
-                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
-                    <Heart size={18} className="text-orange-500" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Taux d&apos;engagement</div>
-                    <div className="text-xl font-bold text-gray-800">{Math.round((collection.likes || 3) / (collection.vues || 20) * 100)}%</div>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
-                    <User size={18} className="text-orange-500" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Abonnés</div>
-                    <div className="text-xl font-bold text-gray-800">{collection.tablikes ? collection.tablikes.length : 3}</div>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
-                    <MessageCircle size={18} className="text-orange-500" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Commentaires</div>
-                    <div className="text-xl font-bold text-gray-800">{Math.floor(Math.random() * 20)}</div>
-                  </div>
-                </div>
-                
-                <div className="p-4 bg-white/10 backdrop-blur-[1px] rounded-lg border border-white/20 hover:bg-white/20 transition-all duration-300 flex items-center gap-3">
-                  <div className="w-10 h-10 rounded-full bg-orange-100/50 flex items-center justify-center">
-                    <ExternalLink size={18} className="text-orange-500" />
-                  </div>
-                  <div>
-                    <div className="text-xs text-gray-500">Visites</div>
-                    <div className="text-xl font-bold text-gray-800">{collection.vues ? collection.vues + Math.floor(Math.random() * 30) : 10}</div>
                   </div>
                 </div>
               </div>
@@ -564,20 +459,26 @@ const page = () => {
         </button>
       )}
 
-      {/* Media Viewer Modal - Responsive */}
+      {/* Media Viewer Modal - Visualiseur de média adapté au type de contenu */}
+      {/* S'affiche uniquement lorsqu'un média est sélectionné (selectedMedia !== null) */}
       {selectedMedia && (
         <div className="fixed inset-0 z-50 bg-white/90 backdrop-blur-md flex flex-col">
+          {/* Barre de navigation du visualiseur */}
           <div className="p-4 border-b border-gray-200/70 flex items-center justify-between">
             <div className="flex items-center gap-3">
               <button
-                onClick={closeMedia}
+                onClick={closeMedia} // Ferme le visualiseur au clic
                 className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
               >
                 <X size={20} className="text-orange-600" />
               </button>
-              <h3 className="text-gray-800 font-medium">Media Viewer</h3>
+              {/* Titre dynamique selon le type de média */}
+              <h3 className="text-gray-800 font-medium">
+                {isVideo(selectedMedia) ? 'Lecteur Vidéo' : 'Visionneuse d\'image'}
+              </h3>
             </div>
 
+            {/* Actions rapides (like, partage, etc.) */}
             <div className="flex gap-3">
               <button className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300">
                 <Heart size={20} className="text-orange-600" />
@@ -591,27 +492,34 @@ const page = () => {
             </div>
           </div>
 
+          {/* Zone principale d'affichage du média */}
           <div className="flex-1 flex items-center justify-center p-4 bg-gradient-to-b from-orange-50/30 to-white/30">
+            {/* Rendu conditionnel: vidéo ou image selon le type détecté */}
             {isVideo(selectedMedia) ? (
               <video
                 src={selectedMedia}
                 className="max-w-full max-h-[calc(100vh-120px)] rounded-lg shadow-md"
-                controls
+                controls 
                 autoPlay
-                playsInline
+                playsInline // Lecture en ligne plutôt qu'en plein écran sur mobile
+                // Démarrer en mode 'muted' pour autoriser l'autoplay sur la plupart des navigateurs
+                
+                muted={isMuted} 
               />
             ) : (
               <img
                 src={selectedMedia}
-                alt="Selected media"
+                alt="Media sélectionné"
                 className="max-w-full max-h-[calc(100vh-120px)] rounded-lg shadow-md object-contain"
               />
             )}
           </div>
 
-          {/* Controls in modal for videos */}
+          {/* Contrôles spécifiques aux vidéos */}
+          {/* N'apparaissent que si le média sélectionné est une vidéo */}
           {isVideo(selectedMedia) && (
             <div className="p-5 border-t border-gray-200/70 flex justify-between">
+              {/* Bouton lecture/pause */}
               <button
                 onClick={togglePlayPause}
                 className="p-3 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
@@ -622,6 +530,7 @@ const page = () => {
                 }
               </button>
 
+              {/* Bouton muet/son */}
               <button
                 onClick={toggleMute}
                 className="p-3 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
