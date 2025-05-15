@@ -1,7 +1,7 @@
 /* eslint-disable @next/next/no-img-element */
 /* eslint-disable react-hooks/rules-of-hooks */
 "use client";
-import { ArrowLeft, Heart, MessageCircle, Play, Pause, Volume2, VolumeX, ExternalLink, Share2, User, Clock, ChevronUp, Grid, Info, X, Bookmark } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Play, ExternalLink, Share2, User, Clock, ChevronUp, Grid, Info, Bookmark } from "lucide-react";
 import { useState, useRef, useEffect } from "react";
 import collection from "@/data/collection.json";
 import laala from "@/data/laala.json";
@@ -13,7 +13,6 @@ import laala from "@/data/laala.json";
  */
 const page = () => {
   // Media viewer state
-  const [selectedMedia, setSelectedMedia] = useState<string | null>(null);
   const [isPlaying, setIsPlaying] = useState(false);
   const [isMuted, setIsMuted] = useState(true);
   const backgroundVideoRef = useRef<HTMLVideoElement>(null);
@@ -54,14 +53,10 @@ const page = () => {
     }
   };
 
-  // Open media in modal - Used when clicking on a media item
-  const openMedia = (media: string) => {
-    setSelectedMedia(media);
-  };
-
-  // Close media modal - Used when exiting the media viewer
-  const closeMedia = () => {
-    setSelectedMedia(null);
+  // Redirect to media detail page
+  const openMedia = (media: string, index: number) => {
+    // Rediriger vers une page de détail avec l'ID du média
+    window.location.href = `/media/${index}`;
   };
 
   // Handle scroll events - Shows/hides scroll-to-top button based on scroll position
@@ -265,7 +260,7 @@ const page = () => {
               return (
                 <div
                   key={index}
-                  onClick={() => openMedia(media)} // Ouvre le visualiseur de média au clic
+                  onClick={() => openMedia(media, index)} // Modifier pour passer l'index en plus du media
                   className="group relative bg-gradient-to-b from-white/20 to-white/40 backdrop-blur-[2px] rounded-xl overflow-hidden border border-white/30 shadow-sm hover:shadow-md transition-all duration-500 cursor-pointer opacity-0 animate-fade-in-up transform hover:-translate-y-2"
                   style={{ animationDelay: `${index * 100}ms`, animationFillMode: 'forwards' }}
                 >
@@ -457,92 +452,6 @@ const page = () => {
         >
           <ChevronUp size={20} className="text-white" />
         </button>
-      )}
-
-      {/* Media Viewer Modal - Visualiseur de média adapté au type de contenu */}
-      {/* S'affiche uniquement lorsqu'un média est sélectionné (selectedMedia !== null) */}
-      {selectedMedia && (
-        <div className="fixed inset-0 z-50 bg-white/90 backdrop-blur-md flex flex-col">
-          {/* Barre de navigation du visualiseur */}
-          <div className="p-4 border-b border-gray-200/70 flex items-center justify-between">
-            <div className="flex items-center gap-3">
-              <button
-                onClick={closeMedia} // Ferme le visualiseur au clic
-                className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
-              >
-                <X size={20} className="text-orange-600" />
-              </button>
-              {/* Titre dynamique selon le type de média */}
-              <h3 className="text-gray-800 font-medium">
-                {isVideo(selectedMedia) ? 'Lecteur Vidéo' : 'Visionneuse d\'image'}
-              </h3>
-            </div>
-
-            {/* Actions rapides (like, partage, etc.) */}
-            <div className="flex gap-3">
-              <button className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300">
-                <Heart size={20} className="text-orange-600" />
-              </button>
-              <button className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300">
-                <Share2 size={20} className="text-orange-600" />
-              </button>
-              <button className="p-2 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300">
-                <ExternalLink size={20} className="text-orange-600" />
-              </button>
-            </div>
-          </div>
-
-          {/* Zone principale d'affichage du média */}
-          <div className="flex-1 flex items-center justify-center p-4 bg-gradient-to-b from-orange-50/30 to-white/30">
-            {/* Rendu conditionnel: vidéo ou image selon le type détecté */}
-            {isVideo(selectedMedia) ? (
-              <video
-                src={selectedMedia}
-                className="max-w-full max-h-[calc(100vh-120px)] rounded-lg shadow-md"
-                controls 
-                autoPlay
-                playsInline // Lecture en ligne plutôt qu'en plein écran sur mobile
-                // Démarrer en mode 'muted' pour autoriser l'autoplay sur la plupart des navigateurs
-                
-                muted={isMuted} 
-              />
-            ) : (
-              <img
-                src={selectedMedia}
-                alt="Media sélectionné"
-                className="max-w-full max-h-[calc(100vh-120px)] rounded-lg shadow-md object-contain"
-              />
-            )}
-          </div>
-
-          {/* Contrôles spécifiques aux vidéos */}
-          {/* N'apparaissent que si le média sélectionné est une vidéo */}
-          {isVideo(selectedMedia) && (
-            <div className="p-5 border-t border-gray-200/70 flex justify-between">
-              {/* Bouton lecture/pause */}
-              <button
-                onClick={togglePlayPause}
-                className="p-3 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
-              >
-                {isPlaying ?
-                  <Pause size={20} className="text-orange-600" /> :
-                  <Play size={20} className="text-orange-600" />
-                }
-              </button>
-
-              {/* Bouton muet/son */}
-              <button
-                onClick={toggleMute}
-                className="p-3 rounded-full bg-orange-100/80 hover:bg-orange-200/80 transition-colors duration-300"
-              >
-                {isMuted ?
-                  <VolumeX size={20} className="text-orange-600" /> :
-                  <Volume2 size={20} className="text-orange-600" />
-                }
-              </button>
-            </div>
-          )}
-        </div>
       )}
     </div>
   );
