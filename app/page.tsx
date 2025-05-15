@@ -117,7 +117,7 @@ const page = () => {
 
       {/* Header - Responsive Navbar - Navigation principale et statut*/}
       <header className="sticky top-0 z-40 bg-white shadow-md">
-        <div className="container max-w-5xl mx-auto px-3 py-2.5 flex items-center justify-between">
+        <div className="container mx-auto px-4 py-3 flex items-center justify-between">
           <div className="flex items-center gap-3">
             <button className="p-2 rounded-full bg-gray-100 hover:bg-orange-100 transition-colors duration-300 group">
               <ArrowLeft size={20} className="text-gray-700 group-hover:text-orange-500 transition-colors duration-300" />
@@ -131,9 +131,9 @@ const page = () => {
         </div>
       </header>
 
-      <main className="container max-w-5xl mx-auto px-3 py-5">
+      <main className="container mx-auto px-4 py-6">
         {/* Cover Image - Image de bannière du profil */}
-        <div className="relative w-full h-48 md:h-64 lg:h-72 mb-6 rounded-xl overflow-hidden shadow-lg">
+        <div className="relative w-full h-56 md:h-72 lg:h-96 mb-8 rounded-xl overflow-hidden shadow-lg">
           <img 
             src={collection.cover}
             alt="Cover" 
@@ -146,7 +146,7 @@ const page = () => {
         <div className="bg-transparent rounded-xl transition-all duration-300 mb-6">
           
           {/* Main content section with improved layout */}
-          <div className="px-3 md:px-5 py-5">
+          <div className="px-3 md:px-4 py-4">
             <div className="md:flex md:gap-8">
               {/* Left column with avatar and stats - repositioned */}
               <div className="md:w-1/3 flex flex-col items-center">
@@ -225,7 +225,7 @@ const page = () => {
           <div className="flex gap-4 border-b border-gray-200/30">
             <button
               onClick={() => setActiveTab('media')}
-              className={`px-5 py-2.5 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'media' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
+              className={`px-4 py-2 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'media' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
             >
               <Grid size={16} className={activeTab === 'media' ? 'text-orange-500' : 'text-gray-400'} />
               Media
@@ -233,7 +233,7 @@ const page = () => {
             </button>
             <button
               onClick={() => setActiveTab('info')}
-              className={`px-5 py-2.5 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'info' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
+              className={`px-4 py-2 text-sm font-medium relative flex items-center gap-2 ${activeTab === 'info' ? 'text-orange-500' : 'text-gray-500'} hover:text-orange-500 transition-colors duration-300`}
             >
               <Info size={16} className={activeTab === 'info' ? 'text-orange-500' : 'text-gray-400'} />
               Info
@@ -246,7 +246,7 @@ const page = () => {
         {/* Cette section affiche tous les médias sous forme de grille responsive */}
         {/* Chaque élément est un poste individuel de la "playlist" */}
         {activeTab === 'media' && (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {laala.fichierAlbum && laala.fichierAlbum.map((media, index) => {
               // Récupérer les métadonnées associées à ce media (si disponibles)
               const metadata = laala.albumMetadata && laala.albumMetadata[index];
